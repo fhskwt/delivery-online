@@ -7,6 +7,7 @@
     <title>@yield('title', config('app.name'))</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
 
 <body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
@@ -26,7 +27,7 @@
 </header>
 
 {{-- CONTENT --}}
-<main class="flex-1 max-w-md mx-auto w-full px-4 py-4">
+<main class="max-w-md lg:max-w-6xl mx-auto px-4 py-6 pb-24">
     @yield('content')
 </main>
 
@@ -57,5 +58,6 @@
     </div>
 </nav>
 
+@livewireScripts
 </body>
 </html>
