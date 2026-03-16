@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libicu-dev \
     && docker-php-ext-configure gd --with-jpeg --with-freetype \
     && docker-php-ext-install \
         pdo_mysql \
@@ -17,6 +18,7 @@ RUN apt-get update && apt-get install -y \
         bcmath \
         zip \
         gd \
+        intl \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apt-get clean \
