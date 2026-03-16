@@ -1,59 +1,167 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Delivery
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Веб‑приложение для управления доставкой заказов (курьеры, заказы, статусы, маршруты) на **Laravel 12** с админ‑панелью на **Filament 5**.
 
-## About Laravel
+Приложение рассчитано на использование в роли внутренней панели для операторов и администраторов службы доставки (управление заказами, пользователями, справочниками и т.д.).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Основные возможности
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Управление заказами**: создание и редактирование заказов, смена статусов.
+- **Пользователи/курьеры**: управление пользователями системы и доступами.
+- **Админ‑панель Filament**: удобный интерфейс для операционных задач.
+- **Фоновая обработка задач**: очереди Laravel (Redis) для долгих операций.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Стек технологий
 
-## Learning Laravel
+- **Язык / фреймворк**: PHP 8.5, Laravel 12, Eloquent
+- **Админ‑панель**: Filament 5 (панель по пути `/admin`)
+- **Фронтенд**: Vite, TailwindCSS
+- **Инфраструктура (dev)**: Docker Compose (nginx + php-fpm + MySQL 8 + Redis 7)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Требования
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Для запуска в Docker (рекомендуется)
 
-## Laravel Sponsors
+- Docker + Docker Compose
+- Node.js + npm (на хосте, для сборки фронта)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Для локального запуска без Docker
 
-### Premium Partners
+- PHP **8.5**
+- Composer
+- Node.js + npm (Node LTS 20+)
+- MySQL 8
+- Redis
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Быстрый старт в Docker
 
-## Contributing
+### 1. Поднять контейнеры
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+docker compose up -d --build
+```
 
-## Code of Conduct
+### 2. Настроить окружение
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+Откройте `.env` и проверьте как минимум:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `APP_URL=http://localhost`
+- `DB_HOST=db`
+- `DB_PORT=3306`
+- `REDIS_HOST=redis`
 
-## License
+### 3. Установить зависимости и прогнать миграции
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+docker compose exec app composer install
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate
+```
+
+### 4. Собрать фронтенд‑ассеты
+
+Node не установлен в `app`‑контейнере, поэтому сборка выполняется на хосте, из корня проекта:
+
+```bash
+npm install
+npm run build
+```
+
+### 5. Доступ к сервисам
+
+- **Web**: `http://localhost`
+- **Admin (Filament)**: `http://localhost/admin`
+- **MySQL (порт на хосте)**: `127.0.0.1:3307`
+- **Redis (порт на хосте)**: `127.0.0.1:6379`
+
+## Локальный запуск (без Docker)
+
+### 1. Установка зависимостей и базовая настройка
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+### 2. Настройка БД и Redis
+
+В `.env` укажите свои настройки, например:
+
+- `DB_HOST=127.0.0.1`
+- `DB_PORT=3306`
+- `REDIS_HOST=127.0.0.1`
+
+Затем примените миграции:
+
+```bash
+php artisan migrate
+```
+
+### 3. Запуск dev‑среды одной командой
+
+В проекте есть удобный скрипт, который поднимает все нужные процессы:
+
+```bash
+composer run dev
+```
+
+Он одновременно запускает:
+
+- `php artisan serve` — HTTP‑сервер приложения
+- `php artisan queue:listen --tries=1` — обработчик очередей
+- `php artisan pail --timeout=0` — просмотр логов в реальном времени
+- `npm run dev` — Vite с hot‑reload фронтенда
+
+## Быстрая установка (локально, один шаг)
+
+Для первичной настройки проекта можно использовать:
+
+```bash
+composer run setup
+```
+
+Скрипт выполняет:
+
+- `composer install`
+- создание `.env` (если его нет)
+- генерацию ключа приложения
+- применение миграций
+- установку npm‑зависимостей
+- сборку фронтенда
+
+## Админ‑панель Filament
+
+- **URL**: `/admin`
+- **Провайдер панели**: `app/Providers/Filament/AdminPanelProvider.php`
+
+Создать администратора (один из вариантов, зависит от версии Filament и доступных команд):
+
+```bash
+php artisan make:filament-user
+```
+
+Если команда отличается, посмотрите список доступных команд:
+
+```bash
+php artisan list
+```
+
+## Полезные artisan‑команды
+
+- **Очистка кешей**:
+
+```bash
+php artisan optimize:clear
+```
+
+## Частые проблемы
+
+- **403 / ошибки записи в `storage` / `bootstrap/cache` в Docker** — контейнер при старте выставляет права на эти папки (см. `entrypoint.sh`). Если вы меняли владельца файлов на хосте, пересоберите контейнер и перезапустите:
+  - `docker compose down`
+  - `docker compose up -d --build`
+- **Приложение не открывается в браузере** — убедитесь, что порт `80` свободен. При необходимости измените проброс порта в `docker-compose.yml` и перезапустите контейнеры.
