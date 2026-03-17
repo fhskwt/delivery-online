@@ -60,10 +60,10 @@
         <h2 class="text-lg font-semibold mb-4">Категории</h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            @foreach (['Завтраки','Обеды','Ужины','Фитнес','Десерты'] as $category)
-                <a href="#"
+            @foreach ($categories as $category)
+                <a href="/menu/{{ $category->slug }}"
                    class="bg-white rounded-2xl p-4 shadow-sm text-center text-sm">
-                    {{ $category }}
+                    {{ $category->name }}
                 </a>
             @endforeach
         </div>
@@ -78,8 +78,8 @@
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            @foreach (range(1, 8) as $item)
-                <x-product-card />
+            @foreach ($products->take(8) as $product)
+                <x-product-card :product="$product" />
             @endforeach
         </div>
     </section>

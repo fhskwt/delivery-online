@@ -10,24 +10,24 @@ class Cart extends Component
     public array $items = [];
     public int $total = 0;
 
-    public function mount()
+    public function mount(): void
     {
         $this->loadCart();
     }
 
-    public function loadCart()
+    public function loadCart(): void
     {
         $this->items = Redis::hgetall($this->cartKey());
         $this->calculateTotal();
     }
 
-    public function increment($id)
+    public function increment($id): void
     {
         Redis::hincrby($this->cartKey(), $id, 1);
         $this->loadCart();
     }
 
-    public function decrement($id)
+    public function decrement($id): void
     {
         $qty = Redis::hget($this->cartKey(), $id);
 
@@ -40,13 +40,13 @@ class Cart extends Component
         $this->loadCart();
     }
 
-    public function remove($id)
+    public function remove($id): void
     {
         Redis::hdel($this->cartKey(), $id);
         $this->loadCart();
     }
 
-    protected function calculateTotal()
+    protected function calculateTotal(): void
     {
         // временно: 1 товар = 500
         $this->total = array_sum($this->items) * 500;
@@ -57,7 +57,7 @@ class Cart extends Component
         return 'cart:' . session()->getId();
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\View\View
     {
         return view('livewire.cart.⚡cart');
     }

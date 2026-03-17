@@ -15,7 +15,7 @@ class Form extends Component
 
     public bool $isRegister = false;
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'phone' => ['required', 'string', 'min:10'],
@@ -63,13 +63,13 @@ class Form extends Component
         }
     }
 
-    public function toggleMode()
+    public function toggleMode(): void
     {
         $this->resetErrorBag();
         $this->isRegister = ! $this->isRegister;
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
         return view('livewire.auth.⚡form');
     }

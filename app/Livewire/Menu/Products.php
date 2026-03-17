@@ -10,17 +10,17 @@ class Products extends Component
 
     protected $listeners = ['categoryChanged'];
 
-    public function mount()
+    public function mount(): void
     {
         $this->category = request('category');
     }
 
-    public function categoryChanged($slug)
+    public function categoryChanged($slug): void
     {
         $this->category = $slug;
     }
 
-    public function render()
+    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
         // временно мок
         return view('livewire.menu.⚡products', [

@@ -11,7 +11,9 @@
 
         {{-- Товары --}}
         <section class="lg:col-span-3">
-            <livewire:menu.products />
+            @foreach($products as $product)
+                <x-product-card :product="$product" />
+            @endforeach
         </section>
 
     </div>
